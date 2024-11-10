@@ -2,6 +2,11 @@
 
 set -Eeuo pipefail
 
+if [[ "$(uname -s)" = "Darwin" ]]; then
+  EXTRA_CFLAGS="--extra-cflags=-I/opt/homebrew/include"
+  EXTRA_LDFLAGS="--extra-ldflags=-L/opt/homebrew/lib"
+fi
+
 ./configure \
   --prefix="/opt/ffmpeg-4.4.2" \
   --enable-gpl \
@@ -15,6 +20,8 @@ set -Eeuo pipefail
   --enable-libopus \
   --enable-libx264 \
   --enable-libx265 \
+  $EXTRA_CFLAGS \
+  $EXTRA_LDFLAGS
 
-bear -- make -j$(nproc)
+bear -- make -j8
 sudo make install
